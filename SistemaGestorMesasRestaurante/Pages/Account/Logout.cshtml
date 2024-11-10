@@ -1,0 +1,46 @@
+﻿@page
+@model DemoDeIdentity.Pages.Account.LogoutModel
+@{
+    ViewData["Title"] = "Log out";
+    Layout = null;  
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/logout.css" />
+    <script src="~/js/logout.js" defer></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    let countdown = 3;
+    const countdownElement = document.getElementById("countdown");
+
+    const interval = setInterval(() => {
+        countdown--;
+        countdownElement.textContent = countdown;
+
+        if (countdown === 0) {
+            clearInterval(interval);
+            window.location.href = '/';  // Redirige a la página de inicio
+        }
+    }, 1000);
+});
+
+</script>
+
+</head>
+<body>
+    <div class="logout-container">
+        <h1>@ViewData["Title"]</h1>
+        <p>Has cerrado sesión exitosamente en la aplicación.</p>
+        <p>Redirigiendo a inicio en <span id="countdown">3</span> segundos...</p>
+        <div class="loader"></div>
+    </div>
+</body>
+</html>
+
+

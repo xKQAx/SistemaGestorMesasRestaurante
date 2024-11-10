@@ -1,0 +1,44 @@
+﻿@page
+@model DemoDeIdentity.Pages.Account.AccessDeniedModel
+@{
+    ViewData["Title"] = "Acceso Denegado";
+}
+
+<head>
+    <meta http-equiv="refresh" content="3; url='@Url.Page("/Index")'" />
+    <style>
+        .access-denied-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+            color: #ff4d4d;
+        }
+        .access-denied-container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .access-denied-container p {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="access-denied-container">
+        <h1>@ViewData["Title"]</h1>
+        <p>No tienes acceso a este recurso.</p>
+        <p>Redirigiendo a inicio en <span id="countdown">3</span> segundos...</p>
+    </div>
+
+    <script>
+        let countdown = 3;
+        const countdownElement = document.getElementById("countdown");
+        setInterval(() => {
+            countdown--;
+            if (countdownElement) countdownElement.textContent = countdown;
+        }, 1000);
+    </script>
+</body>

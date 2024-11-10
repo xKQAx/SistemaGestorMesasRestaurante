@@ -1,0 +1,45 @@
+﻿@page
+@using DemoDeIdentity.Identity
+@model DemoDeIdentity.Pages.Account.RolesModel
+@{
+    List<MyRol> MyRoles = ViewData["roles"] as List<MyRol>;
+    var userEmail = User?.Identity?.Name; // Obtiene el correo del usuario autenticado
+}
+
+<div>
+    <table class="table">
+        @if (MyRoles == null || MyRoles.Count == 0)
+        {
+            <tr>
+                <td>
+                    <h3>No hay roles</h3>
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var item in MyRoles)
+            {
+                <tr>
+                    <td>
+                        <strong>@item.Name</strong> @item.Seccion
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+
+    <form method="post">
+        <div class="form-group">
+            <label for="RoleName">Rol</label>
+            <input id="RoleName" asp-for="Rol.Name" class="form-control" placeholder="Ingrese el nombre del rol" />
+        </div>
+
+        <div class="form-group">
+            <label for="UserEmail">Correo Electrónico</label>
+            <input id="UserEmail" asp-for="Rol.Seccion" class="form-control" value="@userEmail" readonly />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Registrar</button>
+    </form>
+</div>

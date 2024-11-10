@@ -1,0 +1,277 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Sistema de Gestión de Tareas</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <style>
+        /* Estilo para el dropdown */
+        /* Establece un z-index alto para los dropdowns */
+        .dropdown-menu {
+            position: absolute !important; /* Asegura que tenga un posicionamiento absoluto */
+            z-index: 1050 !important; /* Asegura que esté por encima de otros elementos */
+        }
+
+        /* Si quieres que los botones de dropdown también estén al frente */
+        .dropdown-toggle {
+            z-index: 1051 !important; /* Para que el botón del dropdown esté también por encima */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #000000
+        }
+
+
+        /* Estilo del header */
+        header {
+            background-color: #ffffff;
+            color: white;
+            padding: 0px 0;
+            position: relative;
+            transition: all 0.5s ease; /* Transición para el cambio de tamaño */
+        }
+
+
+
+
+
+
+
+
+        .navbar {
+            background-color: #4a90e2;
+            color: #ffffff;
+            position: relative;
+            top: 0;
+            width: 100%;
+            z-index: 1030;
+        }
+
+        /* Asegúrate de que el dropdown se muestre por encima del contenido */
+        .navbar-nav .dropdown-menu {
+            position: absolute; /* Necesario para posicionar el menú */
+            z-index:1050; /* Asegura que se muestre encima de otros elementos */
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2); /* Estilo adicional para el dropdown */
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #ffffff !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: #ffffff !important;
+        }
+
+        /* Main content padding */
+        .content {
+            padding-top: 70px;
+            padding-bottom: 60px;
+        }
+
+        /* Footer Styling */
+        footer.footer {
+            background-color: #4a90e2;
+            color: #ffffff; /* Cambia el texto del footer a blanco */
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+            footer.footer a {
+                color: #ffffff;
+                text-decoration: underline;
+            }
+
+        /* Loading animation */
+        #loading-overlay {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 1040;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+            visibility: visible;
+            opacity: 1;
+        }
+
+            #loading-overlay.hidden {
+                visibility: hidden;
+                opacity: 0;
+            }
+
+        /* Pulsing effect */
+        .pulse-loader {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #4a90e2;
+            animation: pulse 1.5s infinite cubic-bezier(0.66, 0, 0.33, 1);
+        }
+
+        /* Estilos para la tabla con desplazamiento */
+        .table-responsive {
+            max-width: 100%;
+            overflow-x: auto; 
+            overflow-y: auto; 
+            -webkit-overflow-scrolling: touch; 
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            table-layout: auto;
+        }
+
+        thead {
+            background-color: #007bff;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Agregar encabezado "Acciones" en todas las tablas
+            document.querySelectorAll(".table thead tr").forEach(row => {
+                const lastHeader = row.lastElementChild;
+                if (lastHeader && lastHeader.textContent.trim() === "") {
+                    lastHeader.classList.add("actions-header");
+                    lastHeader.textContent = "Acciones";
+                }
+            });
+
+            // Traducir enlaces de acción y añadir estilo de botón
+            document.querySelectorAll(".table td a").forEach(link => {
+                const text = link.textContent.trim();
+                if (text === "Edit") {
+                    link.textContent = "Editar";
+                    link.classList.add("btn", "btn-warning", "btn-sm");
+                } else if (text === "Details") {
+                    link.textContent = "Detalles";
+                    link.classList.add("btn", "btn-info", "btn-sm");
+                } else if (text === "Delete") {
+                    link.textContent = "Eliminar";
+                    link.classList.add("btn", "btn-danger", "btn-sm");
+                }
+            });
+                });
+    </script>
+
+</head>
+<body>
+    <!-- Loading overlay -->
+    <div id="loading-overlay">
+        <div class="pulse-loader"></div>
+    </div>
+
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Sistema de Gestión de Tareas</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Roles">Roles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Privacy2">Privacy2</a>
+                        </li>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            
+                        }
+
+                            <!-- Menú desplegable para Categorías -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCategorias" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Categorías
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownCategorias">
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Clientes" asp-action="Index">Clientes</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Horarios" asp-action="Index">Horarios</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Mesas" asp-action="Index">Mesa</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Notificaciones" asp-action="Index">Notificaciones</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Reservas" asp-action="Index">Reservas</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="AspNetRoles" asp-action="Index">Roles</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="AspNetUsers" asp-action="Index">Usuarios</a></li>
+                                </ul>
+                            </li>
+
+                        </ul>
+
+
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container content">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            &copy; 2024 - Sistema de Gestión de Tareas - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Script to remove loading overlay after page load -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var loadingOverlay = document.getElementById("loading-overlay");
+            loadingOverlay.classList.add("hidden");
+        });
+    </script>
+</body>
+</html>
+

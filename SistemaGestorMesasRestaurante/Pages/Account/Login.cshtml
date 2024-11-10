@@ -1,0 +1,33 @@
+﻿@page
+@using DemoDeIdentity.Identity.Account;
+@model DemoDeIdentity.Identity.Account.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/login.css" />
+</head>
+
+<div class="login-container">
+    <h1>Welcome Back!</h1>
+    <p>Please enter your credentials to access your account.</p>
+
+    <form method="post" class="login-form">
+        <div class="form-group">
+            <label for="Email">Email</label>
+            <input asp-for="Login.Email" id="Email" class="form-control" placeholder="Enter your email" />
+        </div>
+
+        <div class="form-group">
+            <label for="Password">Password</label>
+            <input asp-for="Login.Password" id="Password" class="form-control" type="password" placeholder="Enter your password" />
+        </div>
+
+        <button type="submit" class="login-button">Login</button>
+    </form>
+</div>
+
